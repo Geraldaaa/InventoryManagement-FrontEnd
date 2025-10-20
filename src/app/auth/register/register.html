@@ -2,54 +2,96 @@
   <div class="auth-card">
     <h2 class="auth-title">Register</h2>
 
-    <form (ngSubmit)="register()">
+    <form #registerForm="ngForm" (ngSubmit)="register()" novalidate>
       <div class="form-group">
         <label for="username">Username</label>
-        <input id="username" type="text" class="form-control" placeholder="Enter your username"
-               [(ngModel)]="username" name="username" required>
+        <input id="username"
+               type="text"
+               class="form-control"
+               placeholder="Enter your username"
+               [(ngModel)]="username"
+               name="username"
+               required>
+        <small *ngIf="registerForm.submitted && !username" class="error-text">
+          Username is required.
+        </small>
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" type="password" class="form-control" placeholder="Enter your password"
-               [(ngModel)]="password" name="password" required>
+        <input id="password"
+               type="password"
+               class="form-control"
+               placeholder="Enter your password"
+               [(ngModel)]="password"
+               name="password"
+               required minlength="6">
+        <small *ngIf="registerForm.submitted && !password" class="error-text">
+          Password is required.
+        </small>
       </div>
 
       <div class="form-row">
         <div class="form-group half-width">
           <label for="firstName">First Name</label>
-          <input id="firstName" type="text" class="form-control" placeholder="Enter first name"
-                 [(ngModel)]="firstName" name="firstName" required>
+          <input id="firstName"
+                 type="text"
+                 class="form-control"
+                 [(ngModel)]="firstName"
+                 name="firstName"
+                 required>
         </div>
+
         <div class="form-group half-width">
           <label for="lastName">Last Name</label>
-          <input id="lastName" type="text" class="form-control" placeholder="Enter last name"
-                 [(ngModel)]="lastName" name="lastName" required>
+          <input id="lastName"
+                 type="text"
+                 class="form-control"
+                 [(ngModel)]="lastName"
+                 name="lastName"
+                 required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="email">Email</label>
-        <input id="email" type="email" class="form-control" placeholder="Enter your email"
-               [(ngModel)]="email" name="email" required>
+        <input id="email"
+               type="email"
+               class="form-control"
+               [(ngModel)]="email"
+               name="email"
+               required email>
       </div>
 
       <div class="form-row">
         <div class="form-group half-width">
           <label for="age">Age</label>
-          <input id="age" type="number" class="form-control" placeholder="Enter age"
-                 [(ngModel)]="age" name="age" required>
+          <input id="age"
+                 type="number"
+                 class="form-control"
+                 [(ngModel)]="age"
+                 name="age"
+                 required min="1">
         </div>
+
         <div class="form-group half-width">
           <label for="phone">Phone Number</label>
-          <input id="phone" type="text" class="form-control" placeholder="Enter phone number"
-                 [(ngModel)]="phone" name="phone" required>
+          <input id="phone"
+                 type="text"
+                 class="form-control"
+                 [(ngModel)]="phone"
+                 name="phone"
+                 required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="role">Select Role</label>
-        <select id="role" class="form-control" [(ngModel)]="role" name="role">
+        <select id="role"
+                class="form-control"
+                [(ngModel)]="role"
+                name="role"
+                required>
           <option value="client">Client</option>
           <option value="manager">Manager</option>
           <option value="admin">Account Manager</option>
@@ -60,7 +102,8 @@
     </form>
 
     <p class="auth-footer">
-      Already have an account? <a routerLink="/login">Login here</a>
+      Already have an account?
+      <a routerLink="/login">Login here</a>
     </p>
   </div>
 </div>

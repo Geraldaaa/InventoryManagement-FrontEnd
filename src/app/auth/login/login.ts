@@ -1,108 +1,55 @@
 import { Component } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
-import {FormsModule} from '@angular/forms';
-
-
+import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ FormsModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrls: ['./login.css']
 })
 export class Login {
-  username: string = '';
-  password: string = '';
-  role: string = 'client';
-  submitted = false;
+  username = '';
+  password = '';
+  role = 'client';
 
-
-  constructor(private router: Router) {}
-
-  validationMessages = {
-    username:'',
-    password: '',
-    role:'',
-  };
-
-  onSubmit() {
-    this.submitted = true;
-    this.validateForm();
-
-    if (this.isFormValid()) {
-      console.log('Email', this.username);
-      console.log('Password: ', this.password);
-      alert('Form submitted successfully! Check console for data.');
-      this.resetForm();
-    } else {
-      console.log('Form validation failed!');
-    }
-  }
-
-
-  validateForm() {
-    this.validationMessages = {
-      username:'',
-      password: '',
-      role:'',
-    };
-
-    if (!this.username.trim()) {
-      this.validationMessages.username = 'Name is required';
-    } else if (this.username.trim().length < 6) {
-      this.validationMessages.username = 'Name must be at least 6 characters';
-    }
-
-    if (!this.password) {
-      this.validationMessages.password = 'Password is required';
-    } else if (this.password.length < 8) {
-      this.validationMessages.password = 'Password must be at least 8 characters';
-    }
-  }
-
-
-  isFormValid(): boolean {
-    return !this.validationMessages.username &&
-      !this.validationMessages.password;
-  }
-
-  resetForm() {
-    this.username='';
-    this.password = '';
-    this.submitted = false;
-    this.validationMessages = {
-      username:'',
-      password: '',
-      role:'',
-    };
-  }
-
-
-  onUsernameChange(){
-    if (this.username) {
-      this.validateForm();
-    }
-  }
-
-  onPasswordChange() {
-    if (this.submitted) {
-      this.validateForm();
-    }
-  }
+  constructor(private authService: AuthService, private router: Router) {}
 
   login() {
+    const loginData = {
+      username: this.username,
+      password: this.password
+    };
 
-    if(this.role === 'client') {
-      this.router.navigate(['/dashboard/client']);
-    } else if(this.role === 'manager') {
-      this.router.navigate(['/dashboard/manager']);
-    } else if(this.role === 'admin') {
-      this.router.navigate(['/dashboard/admin']);
-    } else {
-      alert('Invalid role!');
-    }
+    this.authService.login(loginData).subscribe({
+      next: async (res: any) => {
+        console.log('Login success:', res);
+
+        // Ruaj të dhënat në localStorage
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.role);
+        localStorage.setItem('username', res.username);
+
+        alert(`Welcome back, ${res.username}!`);
+
+        // ✅ Redirect sipas rolit
+        const role = res.role; // <-- këtu ishte gabimi (ke përdorur "response" në vend të "res")
+
+        if (role === 'ROLE_ADMIN') {
+          await this.router.navigate(['/dashboard/admin']);
+        } else if (role === 'ROLE_MANAGER') {
+          await this.router.navigate(['/dashboard/manager']);
+        } else {
+          await this.router.navigate(['/dashboard/client']);
+        }
+      },
+      error: (err) => {
+        console.error('Login failed', err);
+        alert('Invalid username or password');
+      }
+    });
   }
-
-
-
 }
