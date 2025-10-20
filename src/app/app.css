@@ -1,0 +1,12 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* zë gjithë lartësinë e ekranit */
+}
+
+.app-main {
+  flex: 1; /* merr hapësirën e mbetur midis header dhe footer */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
